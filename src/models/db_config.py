@@ -2,9 +2,9 @@ from asyncio import current_task
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, async_scoped_session, AsyncSession
 
+from src.config import db_settings
 
-config_url = ""
-
+DB_URL = f"postgresql+asyncpg://{db_settings.DB_USER}:{db_settings.DB_PASS}@{db_settings.DB_HOST}/{db_settings.DB_NAME}"
 
 class DataBaseHelper:
     def __init__(self, url: str, echo: bool = False):
@@ -34,4 +34,4 @@ class DataBaseHelper:
         await session.close()
 
 
-db_helper = DataBaseHelper(url="", echo=False)
+db_helper = DataBaseHelper(url=DB_URL, echo=False)

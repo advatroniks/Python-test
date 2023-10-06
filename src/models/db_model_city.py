@@ -7,6 +7,7 @@ class City(Base):
     """
     Model city
     """
+    __tablename__ = "cities"
 
     name: Mapped[str] = mapped_column(
         unique=True,
