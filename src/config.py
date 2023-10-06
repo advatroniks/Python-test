@@ -1,9 +1,4 @@
-from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-BASE_DIR = Path(__file__).parent.parent
-
-DB_PATH = BASE_DIR / "db.sqlite3"
 
 
 class DbSettings(BaseSettings):
@@ -12,7 +7,7 @@ class DbSettings(BaseSettings):
     DB_NAME: str
     DB_USER: str
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file="/home/harold/Documents/TestTask_UnlimSoft/Python-test/.env")
 
 
 db_settings = DbSettings()
