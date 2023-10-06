@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import db_helper
-from .schemas import CreateCity
+from .schemas import CreateCity, ResponseCity
 from . import crud
 
 router = APIRouter(tags=["/cities"])
@@ -11,15 +11,15 @@ router = APIRouter(tags=["/cities"])
 
 @router.post(
     path="/create_city",
-    response_model=CreateCity
+    response_model=ResponseCity
 )
 async def create_city(
         city: CreateCity,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
-    await crud.create_city(
-        new_city=city,
-        session=session
+    return await crud.create_city(
+            new_city=city,
+            session=session
     )
 
 

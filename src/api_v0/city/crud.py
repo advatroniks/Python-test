@@ -53,3 +53,4 @@ async def delete_city(
         city_for_delete: City
 ):
     await session.delete(city_for_delete)
+    await session.commit()

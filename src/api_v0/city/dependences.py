@@ -1,6 +1,6 @@
 from requests import Response
 
-WEATHER_API_KEY = ''
+WEATHER_API_KEY = '47bb7070504db821c960ddf739c5f340'
 
 
 def get_weather_url(city):
@@ -14,5 +14,6 @@ def get_weather_url(city):
 
 def get_current_temperature(response: Response):
     data = response.json()
-    return data['main']['temp']
+    print(data['main']['temp'])
+    return str(data['main']['temp'])
 
