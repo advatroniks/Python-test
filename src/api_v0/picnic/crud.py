@@ -1,7 +1,7 @@
 import uuid
+from datetime import datetime
 
-
-from sqlalchemy import select, text
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload, selectinload, attributes
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -61,7 +61,10 @@ async def get_picnic_by_id(
 
 async def get_picnics_with_users(
         session: AsyncSession,
-        picnic_id: uuid.UUID | None = None
+        picnic_id: uuid.UUID | None = None,
+        picnic_date: datetime | None = None,
+        past: bool = True
+
 ):
     stmt = (
         select(Picnic)
@@ -70,6 +73,12 @@ async def get_picnics_with_users(
             joinedload(Picnic.city)
         )
     )
+    if picnic_date is not None:
+        stmt = stmt.where(Picnic.time == picnic_date)
+
+    if not past:
+        stmt.where(Picnic.time >= datetime.now())
+
     if picnic_id:
         stmt = stmt.where(Picnic.id == picnic_id)
 
