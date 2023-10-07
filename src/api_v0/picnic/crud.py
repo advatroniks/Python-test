@@ -1,13 +1,16 @@
 import uuid
 
+
+from sqlalchemy import select, text
+from sqlalchemy.orm import joinedload, selectinload, attributes
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from fastapi import HTTPException, status
 
-from src.models import Picnic
+from src.api_v0.user.schemas import ResponseUser
+from src.models import Picnic, User
 from src.api_v0.city.crud import get_city_by_name
-from .schemas import CreatePicnic
+from .schemas import CreatePicnic, ResponseAllTournaments
 
 
 async def create_picnic(
@@ -56,4 +59,36 @@ async def get_picnic_by_id(
     return picnic
 
 
+async def get_picnics_with_users(
+        session: AsyncSession,
+        picnic_id: uuid.UUID | None = None
+):
+    stmt = (
+        select(Picnic)
+        .options(
+            selectinload(Picnic.picnics_reg),
+            joinedload(Picnic.city)
+        )
+    )
+    if picnic_id:
+        stmt = stmt.where(Picnic.id == picnic_id)
 
+    picnics = await session.scalars(stmt)
+    total_response =[]
+    for picnic in picnics:
+        result = ResponseAllTournaments(
+            picnic_id=picnic.id,
+            city=picnic.city.name,
+            city_temperature=picnic.city.weather,
+            time=picnic.time
+        )
+        for reg in picnic.picnics_reg:
+            stmt = select(User).where(User.id == reg.user_id)
+            user = await session.scalar(stmt)
+            user_dict = attributes.instance_dict(user)
+            result.users.append(
+                ResponseUser(**user_dict)
+            )
+        total_response.append(result)
+
+    return total_response

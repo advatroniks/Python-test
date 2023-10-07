@@ -1,0 +1,22 @@
+SELECT
+picnicregistrations.user_id,
+picnicregistrations.picnic_id,
+picnicregistrations.id
+
+FROM
+picnicregistrations
+
+WHERE picnicregistrations.picnic_id = 'aa357d97-c010-4721-8148-6629fa88587b'
+
+
+(UUID('aa357d97-c010-4721-8148-6629fa88587b'),)
+
+SELECT
+    users.id AS users_id,
+    users.name AS users_name,
+    users.surname AS users_surname,
+    users.age AS users_age
+FROM
+    users
+WHERE
+    users.id IN ($1::UUID)

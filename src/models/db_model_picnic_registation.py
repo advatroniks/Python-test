@@ -4,6 +4,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from .db_model_base import Base
+from .db_model_user import User
+from .db_model_picnic import Picnic
 
 
 class PicnicRegistration(Base):
@@ -19,8 +21,9 @@ class PicnicRegistration(Base):
         ForeignKey('picnics.id')
     )
 
-    user = relationship('User', backref='users')
-    picnic = relationship('Picnic', backref='picnics')
+    user: Mapped[User] = relationship(back_populates="picnics_reg")
+
+    picnic: Mapped["Picnic"] = relationship(back_populates="picnics_reg")
 
     def __str__(self):
         return f'{self.__class__.__name__} - id {self.id}'

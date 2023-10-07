@@ -1,10 +1,12 @@
+import uuid
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import APIRouter, Depends
 
 
 from src.models import db_helper
-from .schemas import CreatePicnic
+from .schemas import CreatePicnic, ResponseAllTournaments
 from . import crud
 
 router = APIRouter(
@@ -25,3 +27,26 @@ async def create_picnic(
     )
 
 
+@router.get(
+    path="/all_picnics",
+    response_model=list[ResponseAllTournaments]
+)
+async def get_all_picnics_with_users(
+        session: AsyncSession = Depends(db_helper.get_session_dependency)
+):
+    return await crud.get_picnics_with_users(
+        session=session
+    )
+
+
+@router.get(
+    path="/picnic{picnic_id}"
+)
+async def get_picnic_with_users_by_id(
+        picnic_id: uuid.UUID,
+        session: AsyncSession = Depends(db_helper.get_session_dependency)
+):
+    return await crud.get_picnics_with_users(
+        session=session,
+        picnic_id=picnic_id
+    )
