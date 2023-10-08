@@ -34,4 +34,4 @@ class DataBaseHelper:
         await session.close()
 
 
-db_helper = DataBaseHelper(url=DB_URL, echo=False)
+db_helper = DataBaseHelper(url=DB_URL, echo=True)

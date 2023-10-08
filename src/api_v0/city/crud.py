@@ -21,21 +21,36 @@ async def create_city(
     return city
 
 
-async def get_city_by_name(
-        city: str,
+async def get_all_cities(
+        session: AsyncSession
+) -> list[City]:
+    stmt = select(City)
+
+    cities_seq = await session.scalars(statement=stmt)
+
+    return [city for city in cities_seq]
+
+
+async def get_all_cities_or_scalar_city(
         session: AsyncSession,
-) -> City:
-    stmt = select(City).where(City.name == city)
-    result = await session.execute(statement=stmt)
-    city: City | None = result.scalar_one_or_none()
+        city: str | None
+) -> list[City] | City:
 
-    if city is None:
-        HTTPException(
+    stmt = select(City)
+    if city:
+        stmt = stmt.where(City.name == city)
+
+    cities = await session.execute(statement=stmt)
+    cities_seq = cities.scalars().all()
+
+    if not cities_seq:
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="City not found in database, try again please!"
+            detail="City(s) not found in database, try again please!"
         )
-
-    return city
+    if len(cities_seq) == 1:
+        return cities_seq[0]
+    return [city for city in cities_seq]
 
 
 async def update_city_weather(

@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,13 +26,18 @@ async def create_city(
 
 
 @router.get(
-    path="/get_city"
+    path="/get_city",
+    response_model=list[ResponseCity] | ResponseCity
 )
 async def get_city_by_name(
-        city_name: str,
+        city_name: Annotated[str, Query(
+            max_length=20,
+            description="City name for request"
+        )
+        ] = None,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
-    return await crud.get_city_by_name(
+    return await crud.get_all_cities_or_scalar_city(
         city=city_name,
         session=session,
     )
@@ -43,7 +50,7 @@ async def update_weather_in_the_city(
         city: str,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
-    city_for_update = await crud.get_city_by_name(
+    city_for_update = await crud.get_all_cities_or_scalar_city(
         city=city,
         session=session
     )
@@ -61,7 +68,7 @@ async def delete_city(
         city: str,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
-    city_for_delete = await crud.get_city_by_name(
+    city_for_delete = await crud.get_all_cities_or_scalar_city(
         city=city,
         session=session
     )

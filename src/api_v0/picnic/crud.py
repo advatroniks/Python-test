@@ -2,14 +2,14 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload, selectinload, attributes
+from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import HTTPException, status
 
 from src.api_v0.user.schemas import ResponseUser
-from src.models import Picnic, User, PicnicRegistration
-from src.api_v0.city.crud import get_city_by_name
+from src.models import Picnic, PicnicRegistration
+from src.api_v0.city.crud import get_all_cities_or_scalar_city
 from .schemas import CreatePicnic, ResponseAllTournaments
 
 
@@ -17,7 +17,7 @@ async def create_picnic(
         picnic: CreatePicnic,
         session: AsyncSession,
 ):
-    city = await get_city_by_name(
+    city = await get_all_cities_or_scalar_city(
         city=picnic.city_name,
         session=session
     )
