@@ -5,7 +5,7 @@ from typing import Annotated
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 
 
 from src.models import db_helper
@@ -24,6 +24,12 @@ async def create_picnic(
         picnic: CreatePicnic,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
+    if picnic.time < datetime.now():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You can't add picnic in past, check picnic data!"
+        )
+
     return await crud.create_picnic(
         picnic=picnic,
         session=session

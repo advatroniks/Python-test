@@ -6,6 +6,7 @@ from src.config import db_settings
 
 DB_URL = f"postgresql+asyncpg://{db_settings.DB_USER}:{db_settings.DB_PASS}@{db_settings.DB_HOST}/{db_settings.DB_NAME}"
 
+
 class DataBaseHelper:
     def __init__(self, url: str, echo: bool = False):
         self.engine = create_async_engine(
@@ -34,4 +35,4 @@ class DataBaseHelper:
         await session.close()
 
 
-db_helper = DataBaseHelper(url=DB_URL, echo=True)
+db_helper = DataBaseHelper(url=DB_URL, echo=False)

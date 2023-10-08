@@ -44,7 +44,8 @@ async def get_city_by_name(
 
 
 @router.patch(
-    path="/update_city/{city_name}"
+    path="/update_city/{city_name}",
+    response_model=ResponseCity
 )
 async def update_weather_in_the_city(
         city: str,
@@ -55,9 +56,9 @@ async def update_weather_in_the_city(
         session=session
     )
 
-    await crud.update_city_weather(
-        city_for_update=city_for_update,
-        session=session,
+    return await crud.update_city_weather(
+            city_for_update=city_for_update,
+            session=session,
     )
 
 
