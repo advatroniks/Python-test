@@ -6,6 +6,7 @@ class DbSettings(BaseSettings):
     DB_PASS: str
     DB_NAME: str
     DB_USER: str
+    WEATHER_API_KEY: str
 
     model_config = SettingsConfigDict(env_file="/home/harold/Documents/TestTask_UnlimSoft/Python-test/.env")
 

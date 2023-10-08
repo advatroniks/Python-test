@@ -10,7 +10,7 @@ class BaseCity(BaseModel):
 
 
 class CreateCity(BaseCity):
-    @computed_field
+    @computed_field                 # Метод computed_field(с pydantic v2), работает как @property
     def weather(self) -> str:
         return get_weather(self.name)
 

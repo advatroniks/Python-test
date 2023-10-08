@@ -19,6 +19,13 @@ async def create_city(
         city: CreateCity,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
+    """
+    Роутер принимает CreateCity(Pd object). Возвращает
+    ResponseCity(Pd object) результат работы create_city.
+    :param city: CreateCity(Pd object)
+    :param session: AsyncSession object
+    :returns: ResponseCity(Pd object) - созданный город
+    """
     return await crud.create_city(
             new_city=city,
             session=session
@@ -26,7 +33,7 @@ async def create_city(
 
 
 @router.get(
-    path="/get_city",
+    path="/get_cities",
     response_model=list[ResponseCity] | ResponseCity
 )
 async def get_city_by_name(
@@ -37,6 +44,14 @@ async def get_city_by_name(
         ] = None,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
+    """
+    Роутер принимает city_name(str), где проверяется на длину(< 20 char),
+    не обязательный параметр. Если city_name не задан, то возвращает list[ResponseCity(PD obj),
+    если имя города указано, возвращает объект города с этим названием.
+    :param city_name: НЕ ОБЯЗАТЕЛЬНЫЙ параметр. str(имя города(max_length 20 char)
+    :param session: AsyncSession obj
+    :returns: list[ResponseCity] если city_name = None, то ResponseCity(Pd obj)
+    """
     return await crud.get_all_cities_or_scalar_city(
         city=city_name,
         session=session,
@@ -51,6 +66,12 @@ async def update_weather_in_the_city(
         city: str,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
+    """
+    Роутер для обновления погоды в указанном городе на текущую.
+    :param city: Название города(str)
+    :param session: AsyncSession obj
+    :returns: ResponseCity >> город, с обновленным состояниеем погоды.
+    """
     city_for_update = await crud.get_all_cities_or_scalar_city(
         city=city,
         session=session
@@ -69,6 +90,13 @@ async def delete_city(
         city: str,
         session: AsyncSession = Depends(db_helper.get_session_dependency)
 ):
+    """
+    Роутер для удаления города. Сначала идет получение объекта города по имени.
+    После этот город удаляется из БД.
+    :param city: Название города(str)
+    :param session: AsyncSession obj
+    :returns: None
+    """
     city_for_delete = await crud.get_all_cities_or_scalar_city(
         city=city,
         session=session

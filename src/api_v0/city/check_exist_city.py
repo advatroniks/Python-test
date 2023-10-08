@@ -1,13 +1,18 @@
-from requests import Session
+from requests import Session, Response
 
 from src.api_v0.city.dependences import get_weather_url
-
-WEATHER_API_KEY = '47bb7070504db821c960ddf739c5f340'
 
 
 def check_existing_city(
         city: str
-):
+) -> Response | bool:
+    """
+    Функция проверяет есть ли город на стороне API OpenWeather.
+    Создается сессия, делается запрос, при 200 >> ответ от API.
+    Если же код отличный от 200, возвращается False.
+    :param city:
+    :return: Response | False
+    """
     session = Session()
 
     url = get_weather_url(city)

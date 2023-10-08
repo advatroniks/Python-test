@@ -1,14 +1,11 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import db_helper
 from .schemas import CreateUser, ResponseUser
-from . import crud
 from .dependences import validate_age_parameter, validate_age_for_add
-
+from . import crud
 
 router = APIRouter(tags=["users"])
 
