@@ -7,7 +7,7 @@ from .db_model_base import Base
 
 if TYPE_CHECKING:
     from .db_model_picnic_registation import PicnicRegistration
-
+    from .db_model_picnic import Picnic
 
 class User(Base):
     """

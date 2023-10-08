@@ -58,7 +58,8 @@ async def get_all_picnics_with_users(
 
 
 @router.get(
-    path="/picnic{picnic_id}"
+    path="/picnic{picnic_id}",
+    response_model=list[ResponseAllTournaments]
 )
 async def get_picnic_with_users_by_id(
         picnic_id: uuid.UUID,

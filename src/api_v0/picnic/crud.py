@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
 from src.api_v0.user.schemas import ResponseUser
-from src.models import Picnic, User
+from src.models import Picnic, User, PicnicRegistration
 from src.api_v0.city.crud import get_city_by_name
 from .schemas import CreatePicnic, ResponseAllTournaments
 
@@ -69,35 +69,32 @@ async def get_picnics_with_users(
     stmt = (
         select(Picnic)
         .options(
-            selectinload(Picnic.picnics_reg),
+            selectinload(Picnic.picnics_reg)
+            .joinedload(PicnicRegistration.user),
             joinedload(Picnic.city)
         )
     )
+
     if picnic_date is not None:
         stmt = stmt.where(Picnic.time == picnic_date)
 
     if not past:
-        stmt.where(Picnic.time >= datetime.now())
+        stmt = stmt.where(Picnic.time >= datetime.now())
 
     if picnic_id:
         stmt = stmt.where(Picnic.id == picnic_id)
 
-    picnics = await session.scalars(stmt)
-    total_response =[]
-    for picnic in picnics:
-        result = ResponseAllTournaments(
-            picnic_id=picnic.id,
-            city=picnic.city.name,
-            city_temperature=picnic.city.weather,
-            time=picnic.time
-        )
-        for reg in picnic.picnics_reg:
-            stmt = select(User).where(User.id == reg.user_id)
-            user = await session.scalar(stmt)
-            user_dict = attributes.instance_dict(user)
+    picnics_seq_or_instance = await session.scalars(statement=stmt)
+
+    total_response = []
+    for picnic in picnics_seq_or_instance:
+        result = ResponseAllTournaments.model_validate(picnic, from_attributes=True)
+
+        for user in picnic.picnics_reg:
             result.users.append(
-                ResponseUser(**user_dict)
+                ResponseUser.model_validate(user.user, from_attributes=True)
             )
+
         total_response.append(result)
 
     return total_response

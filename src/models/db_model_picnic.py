@@ -25,7 +25,5 @@ class Picnic(Base):
 
     picnics_reg: Mapped[list["PicnicRegistration"]] = relationship(back_populates="picnic")
 
-    # users: Mapped[list["User"]] = relationship(back_populates="picnics")
-
     def __str__(self):
         return f"{self.__class__.__name__}  id - {self.id}"

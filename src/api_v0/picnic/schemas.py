@@ -3,7 +3,9 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+
 from src.api_v0.user.schemas import ResponseUser
+from src.api_v0.city.schemas import ResponseCity
 
 
 class CreatePicnic(BaseModel):
@@ -12,13 +14,10 @@ class CreatePicnic(BaseModel):
 
 
 class ResponseAllTournaments(BaseModel):
-    picnic_id: uuid.UUID
-    city: str
-    city_temperature: str
+    id: uuid.UUID
+    city: ResponseCity
     time: datetime
     users: list[ResponseUser] = []
 
-    class Config:
-        orm_mode=True
 
 

@@ -12,3 +12,5 @@ class CreateUser(BaseModel):
 class ResponseUser(CreateUser):
     id: uuid.UUID
 
+    # class Config:
+    #     orm_mode = True

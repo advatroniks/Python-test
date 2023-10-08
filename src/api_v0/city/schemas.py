@@ -17,4 +17,5 @@ class CreateCity(BaseCity):
 
 class ResponseCity(BaseCity):
     id: uuid.UUID
+    weather: str
 

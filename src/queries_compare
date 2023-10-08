@@ -16,13 +16,6 @@ FROM
 SELECT
     picnicregistrations.picnic_id AS picnicregistrations_picnic_id,
     picnicregistrations.user_id AS picnicregistrations_user_id,
-    picnicregistrations.id AS picnicregistrations_id,
-    users_1.name AS users_1_name,
-    users_1.surname AS users_1_surname,
-    users_1.age AS users_1_age,
-    users_1.id AS users_1_id
+    picnicregistrations.id AS picnicregistrations_id
 FROM
     picnicregistrations
-    LEFT OUTER JOIN
-        users AS users_1 ON users_1.id = picnicregistrations.user_id
-
