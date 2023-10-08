@@ -1,7 +1,7 @@
 from requests import Response
-from src.config import DbSettings
+from src.config import db_settings
 
-WEATHER_API_KEY = DbSettings.WEATHER_API_KEY
+WEATHER_API_KEY = db_settings.WEATHER_API_KEY
 
 
 def get_weather_url(city: str):

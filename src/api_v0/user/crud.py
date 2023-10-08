@@ -22,8 +22,8 @@ async def create_user(
 
 async def get_all_users_or_scalar_user(
         session: AsyncSession,
-        min_age: int | None,
-        max_age: int | None,
+        min_age: int | None = None,
+        max_age: int | None = None,
         user_id: uuid.UUID | None = None,
 ) -> list[User] | User:
 
