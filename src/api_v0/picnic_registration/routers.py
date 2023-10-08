@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import db_helper
-from src.api_v0.user.crud import get_user_by_id
+from src.api_v0.user.crud import get_all_users_or_scalar_user
 from src.api_v0.picnic.crud import get_picnic_by_id
 
 from .service import check_actual_date
@@ -34,7 +34,7 @@ async def registration_for_picnic(
 
     check_actual_date(picnic.time)
 
-    user = await get_user_by_id(
+    user = await get_all_users_or_scalar_user(
         session=session,
         user_id=picnic_registration.user_id
     )

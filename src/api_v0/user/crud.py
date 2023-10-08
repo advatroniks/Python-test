@@ -20,19 +20,31 @@ async def create_user(
     return user
 
 
-async def get_user_by_id(
+async def get_all_users_or_scalar_user(
         session: AsyncSession,
-        user_id: uuid.UUID,
-) -> User:
-    stmt = select(User).where(User.id == user_id)
-    result = await session.execute(statement=stmt)
-    user = result.scalar_one_or_none()
+        min_age: int | None,
+        max_age: int | None,
+        user_id: uuid.UUID | None = None,
+) -> list[User] | User:
 
-    if user is None:
-        HTTPException(
+    stmt = select(User)
+    if user_id:
+        stmt = stmt.where(User.id == user_id)
+
+    if min_age:
+        stmt = stmt.where(User.age >= min_age)
+
+    if max_age:
+        stmt = stmt.where(User.age <= max_age)
+
+    users = await session.execute(statement=stmt)
+    users_seq = users.scalars().all()
+
+    if not users_seq:
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found, try again please!"
+            detail="User(s) not found in database, try again please!"
         )
-    return user
-
-
+    if len(users_seq) == 1:
+        return users_seq[0]
+    return [city for city in users_seq]
