@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class CreateUser(BaseModel):
@@ -12,5 +12,3 @@ class CreateUser(BaseModel):
 class ResponseUser(CreateUser):
     id: uuid.UUID
 
-    # class Config:
-    #     orm_mode = True
